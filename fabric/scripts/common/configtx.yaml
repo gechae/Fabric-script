@@ -1,0 +1,168 @@
+
+Organizations:
+  - &googleorderer
+      Name: googleOrdererMSP
+      ID: googleOrdererMSP
+      MSPDir : /sw/fabric/scripts/common/crypto-config/ordererOrganizations/localhost.localdomain/msp
+
+      Policies:
+        Readers:
+          Type: ImplicitMeta
+          Rule: "ANY Readers"
+        Writers:
+          Type: ImpliciMeta
+          Rule: "ANY Writers"
+        Admins:
+          Type: Signature
+          Rule: "OR('googleMSP.admin')"
+       
+      OrdererEndPoints: 
+        - orderer1..com:
+        - orderer2..com:
+  - &google
+      Name: googleMSP
+      ID: googleMSP
+      MSPDir: /sw/fabric/scripts/common/crypto-config/peerOrganizations/localhost.localdomain/msp
+      
+      Policies:
+        Readers:
+          Type: ImplicitMeta
+          Rule: "ANY Readers"
+        Writers:
+          Type: ImplicitMeta
+          Rule: "ANY Writers"
+        Admins:
+          Type: Signature
+          Rule: "OR('googleMSP.admin')"
+        Endorsement:
+          Type: ImplicitMeta1
+          Rule: "ANY Writers"
+        AnchorPeers:
+          - Host: peer1.google.com
+            Port: 8060 
+  - &naver
+      Name: naverMSP
+      ID: naverMSP
+      MSPDir: /sw/fabric/scripts/common/crypto-config/peerOrganizations/localhost.localdomain/msp
+      
+      Policies:
+        Readers:
+          Type: ImplicitMeta
+          Rule: "ANY Readers"
+        Writers:
+          Type: ImplicitMeta
+          Rule: "ANY Writers"
+        Admins:
+          Type: Signature
+          Rule: "OR('naverMSP.admin')"
+        Endorsement:
+          Type: ImplicitMeta1
+          Rule: "ANY Writers"
+        AnchorPeers:
+          - Host: peer1.naver.com
+            Port: 8060 
+Capabilities:
+  Channel: &ChannelCapabilities
+    V2_0: true
+  Orderrer: &OrdererCapabilities
+    V2_0: true
+  Application: &ApplicationCapabilities
+    V2_0: true
+ 
+Application: &ApplicationDefaults
+  Organizations:
+    Policits:
+      Readers:
+        Type: ImplicitMeta
+        Rule: "ANY Readers"
+      Writers:
+        Type: ImplicitMeta
+        Rule: "ANY Writers"
+      Admins:
+        Type: ImplicitMeta
+        Rule: "MAJORITY Admins"
+      LifecycleEndorsement:
+        Type: ImplicitMeta
+        Rule: "MAJORITY Endorsement"
+      Endorsement:
+        Type: ImpliciMeta
+        Rule: "MAJORITY Endorsement"
+  Capabilities:
+    <<: *ApplicationCapabilities
+
+Oraderer: &OrdererDefaults
+  OrdererType: etcdraft
+
+  #Addresses:
+    #- orderer.example.com:7050   
+  EtcdRaft: 
+    Consenters:
+    - Host: orderer1..com
+      Port: 
+      ClientTLSCert: /sw/fabric/scripts/common/crypto-config/organizations/ordererOrganizations/naver.com/orderers/orderer1.naver.com/tls/server.crt
+      ServerTLSCert: /sw/fabric/scripts/common/crypto-config/organizations/ordererOrganizations/naver.com/orderers/orderer1.naver.com/tls/server.crt 
+    - Host: orderer2..com
+      Port: 
+      ClientTLSCert: /sw/fabric/scripts/common/crypto-config/organizations/ordererOrganizations/naver.com/orderers/orderer2.naver.com/tls/server.crt
+      ServerTLSCert: /sw/fabric/scripts/common/crypto-config/organizations/ordererOrganizations/naver.com/orderers/orderer2.naver.com/tls/server.crt 
+  BatchTimeout: 2s
+  BatchSize:
+    MaxMessageCount: 10
+    AbsoluteMaxBytes: 99 MB
+    PreferredMaxBytes: 512 KB
+
+  Organizations:
+    Policits:
+      Readers:
+        Type: ImplicitMeta
+        Rule: "ANY Readers"
+      Writers:
+        Type: ImplicitMeta
+        Rule: "ANY Writers"
+      Admins:
+        Type: ImplicitMeta
+        Rule: "MAJORITY Admins"
+      BlockValidation:
+        Type: ImplicitMeta
+        Rule: "ANY Writers"
+
+Channel: &ChannelDefaults
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+    Capabilities:
+      <<: *ChannelCapabilkities
+
+Profiles:
+  TwoOrgsOrdererGenesis:
+    <<: *ChannelDefaults
+    Orderer:
+       <<: *OrdererDefaults
+       Organizations:
+         - *OrdererOrg
+       Capabilities:
+         << *OrsdererCapabilites
+    Consortiums:
+        SampleConsortium:
+            Organizations:
+              - *Org1
+              - *Org2
+
+
+  TWoOrgsChannel:
+      Consortium: SampleConsortium
+      <<: *ChannelDefaults
+      Application:
+        <<: *ApplicationDefaults
+        Organizations:
+          - *Org1
+          - *Org2
+        Capabilities:
+                 <<: *ApplicationCapabilities

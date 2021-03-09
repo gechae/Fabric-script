@@ -1,0 +1,21 @@
+
+Organizations:
+ - &googleorderer
+      Name: googleOrdererMSP
+      ID: googleOrdererMSP
+      MSPDir : /sw/fabric/scripts/common/crypto-config/ordererOrganizations/localhost.localdomain/msp
+
+      Policies:
+          Readers:
+              Type: ImplicitMeta
+              Rule: "ANY Readers"
+          Writers:
+              Type: ImpliciMeta
+              Rule: "ANY Writers"
+          Admins:
+              Type: Signature
+              Rule: "OR('googleMSP.admin')"
+
+      OrdererEndPoints: 
+ - orderer1..com:
+ - orderer2..com:
