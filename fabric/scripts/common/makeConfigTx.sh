@@ -57,13 +57,11 @@ Organizations:"
 echo "
 Capabilities:
   Channel: &ChannelCapabilities
-    V2_0_0: true
-
+    V2_0: true
   Orderer: &OrdererCapabilities
-    V2_0_0: true
-
+    V2_0: true
   Application: &ApplicationCapabilities
-    V2_0_0: true
+    V2_0: true
  
 Application: &ApplicationDefaults
   Organizations:
@@ -169,6 +167,6 @@ echo "  TwoOrgsChannel:
   done
 echo "        Capabilities:
                 <<: *ApplicationCapabilities"
-} > ${PWD}/configtx/configtx.yaml
+} > /root/data/configtx.yaml
 
 }

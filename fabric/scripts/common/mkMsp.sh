@@ -254,11 +254,17 @@ function createOrderer() {
     done
 }
 
+function createConsortium() {
+
+export FABRIC_CFG_PATH=/root/data/
+. ./scripts/makeConfigTx.sh
+coreateConfigTx
+
+/root/data/bin/configtxgen -profile TwoOrgsOrdererGenesis -channelID system-channel -outputBlock /root/data/genesis.block
+
+
+}
 set -a 
 createPeer
 createOrderer
-
-mkdir /configtx
-export FABRIC_CFG_PATH=/configtx
-. ./scripts/makeConfigTx.sh
-createConfigTx
+createConsortium
